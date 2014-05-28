@@ -1,0 +1,39 @@
+input[type=button]{
+    height:40px;
+	margin: 8px;
+}
+#grid {
+    width:400px;
+    height:400px;
+}
+.cell {
+    box-sizing: border-box;
+    width:5%;
+    height:5%;
+    background-color:#0A0;
+    float:left;
+}
+
+.lines .cell{
+	border:5px solid #000;
+}
+
+.lines .cell.N {
+    border-top: none;
+}
+.lines .cell.E {
+    border-right: none;
+}
+.lines .cell.S {
+    border-bottom: none;
+}
+.lines .cell.W {
+    border-left: none;
+}
+
+.grid .cell{
+	background-color:#000;
+}
+.grid .cell.open{
+	background-color:#0A0;
+}
