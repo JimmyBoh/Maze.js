@@ -14,15 +14,33 @@ window.MazeJS = {};
 	m.Mazes = [];
 	m.Generators = {};
 	m.Generators.register = function (name, method) {
-		m.Generators[name] = method;
+		m.Generators[name] = new m.Generator(name, method);
 	};
 
-	m.Maze = function (w, h, onStateChanged) {
-		this.width = w;
-		this.height = h;
+	m.Maze = function (options) {
+		
+		var defaults = {
+			w: 5,
+			h: 5,
+			onCellChange: function(){},
+			generator: null
+		};
+		
+		options.w = options.w || defaults.w;
+		options.h = options.h || defaults.h;
+		options.onCellChange = options.onCellChange || defaults.onCellChange;
+		options.generator = options.generator || defaults.generator;
+		
+		if(typeof options.generator == 'string')
+			options.generator = MazeJS.Generators[options.generator];
+		
+		this.options = options;
+		this.width = options.w;
+		this.height = options.h;
+		this.generator = options.generator.Name;
 		this.cells = new Array(this.width);
 
-		m.Cell.prototype.onStateChanged = onStateChanged;
+		m.Cell.prototype.onCellChange = options.onCellChange;
 
 		for (var c = 0; c < this.width; c++) {
 			for (var r = 0; r < this.height; r++) {
@@ -36,19 +54,19 @@ window.MazeJS = {};
 		m.Mazes.push(this);
 	};
 
-	m.Maze.prototype.generate = function (generator, seed, done) {
-		this.seed = seed || Math.floor(Math.random() * 99999);
-		done = done || function () {};
-
-		if (typeof generator === 'string')
-			generator = m.Generators[generator];
-
-		if (typeof this.seed === 'function'){
-			done = this.seed;
-			this.seed = Math.floor(Math.random() * 99999);
-		}
+	m.Maze.prototype.generate = function (options) {
+		options.generator = options.generator || this.generator;
 		
-		generator.call(this, this, this.seed, done);
+		if(!options.generator) throw new Error('No generator was specified!');
+		
+		this.seed = options.seed || Math.floor(Math.random() * 99999);
+		done = options.done || function () {};
+
+		if (typeof options.generator === 'string')
+			options.generator = m.Generators[options.generator];
+		
+		this.generator = options.generator.Name;
+		options.generator.Create.call(this, this, this.seed, options.done);
 	};
 
 	m.Maze.prototype.clear = function () {
@@ -135,7 +153,7 @@ window.MazeJS = {};
 
 		this.previousState = this.state;
 		this.state = stateString;
-		this.onStateChanged.call(this, this);
+		this.onCellChange.call(this, this);
 	};
 
 	m.Cell.prototype.switchState = function (stateChar, val) {
@@ -165,7 +183,7 @@ window.MazeJS = {};
 		this.previousState = this.state;
 		this.state = stateChar + this.state;
 
-		this.onStateChanged.call(this, this);
+		this.onCellChange.call(this, this);
 	};
 
 	m.Cell.prototype.removeState = function (stateChar) {
@@ -179,7 +197,7 @@ window.MazeJS = {};
 		this.previousState = this.state || '';
 		this.state = this.state.replace(stateChar, '');
 
-		this.onStateChanged.call(this, this);
+		this.onCellChange.call(this, this);
 	};
 
 	m.SeededRandom = function (seed) {
@@ -199,5 +217,10 @@ window.MazeJS = {};
 	m.SeededRandom.prototype.nextInt = function (min, max) {
 		return Math.floor(this.next(min,max));
 	};
+	
+	m.Generator = function(name, create){
+		this.Name = name;
+		this.Create = create;
+	}
 
 })(window.MazeJS);

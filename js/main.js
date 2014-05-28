@@ -35,11 +35,16 @@ window.generateMaze = function (w, h) {
 
 	var seedInput = $('#seedInput');
 	var seed = seedInput.val();
-	
-	if(!seed) return;
 
-	window.maze.generate(MazeJS.Generators.Random, seed, function () {
-		//seedInput.val(this.seed);
+	if (!seed)
+		return;
+
+	window.maze.generate({
+		generator : 'Random',
+		seed : seed,
+		done : function () {
+			//seedInput.val(this.seed);
+		}
 	});
 }
 
@@ -93,7 +98,7 @@ window.displayCell = function (cell) {
 }
 
 window.clearGrid = function () {
-$('#seedInput').val('');
+	$('#seedInput').val('');
 	window.maze.clear();
 }
 
@@ -102,5 +107,10 @@ $(function () {
 
 	window.buildGrid(Size, Size);
 
-	window.maze = new MazeJS.Maze(Size, Size, displayCell);
+	window.maze = new MazeJS.Maze({
+			width : Size,
+			height : Size,
+			onCellChange : displayCell,
+			generator : 'Random'
+		});
 });
