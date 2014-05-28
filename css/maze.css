@@ -1,7 +1,14 @@
-input[type=button]{
+input{
     height:40px;
 	margin: 8px;
 }
+
+input[type=text]{
+	width:174px;
+	height: 32px;
+	font-size:24px;
+}
+
 #grid {
     width:400px;
     height:400px;

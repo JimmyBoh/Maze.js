@@ -109,9 +109,16 @@ window.MazeJS = {};
 		return neighbors;
 	};
 
-	m.Cell.prototype.setState = function (stateString) {
+	m.Cell.prototype.setState = function (stateString, force) {
 		stateString = stateString.toUpperCase();
 
+		if(!force){
+			if(this.y === 0) stateString = stateString.replace('N','');
+			if(this.x+1 === this.grid.width) stateString = stateString.replace('E','');
+			if(this.y+1 === this.grid.height) stateString = stateString.replace('S','');
+			if(this.x === 0)  stateString = stateString.replace('W','');
+		}
+		
 		this.switchState('N', stateString.indexOf('N') > -1);
 		this.switchState('E', stateString.indexOf('E') > -1);
 		this.switchState('S', stateString.indexOf('S') > -1);
