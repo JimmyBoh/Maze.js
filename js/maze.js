@@ -37,17 +37,17 @@ window.MazeJS = {};
 	};
 
 	m.Maze.prototype.generate = function (generator, seed, done) {
-		this.seed = seed || Math.random() * 99999999;
+		this.seed = seed || Math.floor(Math.random() * 99999);
 		done = done || function () {};
 
 		if (typeof generator === 'string')
 			generator = m.Generators[generator];
 
-		if (typeof this.seed === 'function') {
+		if (typeof this.seed === 'function'){
 			done = this.seed;
-			this.seed = Math.random() * 99999999;
+			this.seed = Math.floor(Math.random() * 99999);
 		}
-
+		
 		generator.call(this, this, this.seed, done);
 	};
 
@@ -75,11 +75,11 @@ window.MazeJS = {};
 		this.x = x;
 		this.y = y;
 
-		this.N = true;
-		this.E = true;
-		this.S = true;
-		this.W = true;
-		this.state = 'NESW';
+		this.N = false;
+		this.E = false;
+		this.S = false;
+		this.W = false;
+		this.state = '';
 		
 		if(this.x == 0)
 			this.switchState('W', false);

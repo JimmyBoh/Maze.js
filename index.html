@@ -21,12 +21,16 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-		
+		<p>
+			Enter a seed and click GENERATE, or click RANDOM.
+		</p>
 		<input type="button" onclick="javascript: clearGrid();" value="CLEAR" />
 		<input type="button" onclick="javascript: generateMaze(Size, Size);" value="GENERATE" />
-		<input type="text" value="10" id="seedInput" title="Seed  (empty for random)"/>
+		<input type="text" value="10" id="seedInput" title="Seed  (empty for random)"/> <input type="button" onclick="javascript: generateRandom();" value="RANDOM" >
 		<div id="grid"></div>
-
+		<p>
+			<a href="https://github.com/JimmyBoh/Maze.js">Source on Github</a>
+		</p>
 		<div id="scripts">
 			<script src="js/vendor/jquery-1.10.2.min.js"></script>
 			<script src="js/plugins.js"></script>

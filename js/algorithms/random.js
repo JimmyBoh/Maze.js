@@ -9,9 +9,7 @@
 	
 	var randos = ['N', 'E', 'S', 'W', 'NE', 'SE', 'NW', 'SW', 'WE', 'NS', 'NWE', 'SWN', 'ESW', 'NES', 'NSEW'];
 	m.Generators.register(name, function (maze, seed, done) {
-		
 		var rand = new m.SeededRandom(seed);
-		
 		
 		maze.forEach(function (cell) {
 			cell.setState(randos[rand.nextInt(0, randos.length)]);

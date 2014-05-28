@@ -32,18 +32,22 @@ window.buildGrid = function (w, h) {
 }
 
 window.generateMaze = function (w, h) {
+
+	var seedInput = $('#seedInput');
+	var seed = seedInput.val();
 	
-	var seed = $('#seedInput').val();
-	
-	if(window.maze)
-		window.maze.clear();
-	else
-		window.maze = new MazeJS.Maze(Size, Size, displayCell);
+	if(!seed) return;
 
 	window.maze.generate(MazeJS.Generators.Random, seed, function () {
-		//alert(this.cells[2][2].state);
+		//seedInput.val(this.seed);
 	});
 }
+
+window.generateRandom = function () {
+	window.maze.generate(MazeJS.Generators.Random, function () {
+		$('#seedInput').val(this.seed);
+	});
+};
 
 window.findCellDiv = function (x, y) {
 	return $('#' + x + 'x' + y);
@@ -89,7 +93,7 @@ window.displayCell = function (cell) {
 }
 
 window.clearGrid = function () {
-
+$('#seedInput').val('');
 	window.maze.clear();
 }
 
@@ -97,4 +101,6 @@ $(function () {
 	Grid = $('#grid');
 
 	window.buildGrid(Size, Size);
+
+	window.maze = new MazeJS.Maze(Size, Size, displayCell);
 });
