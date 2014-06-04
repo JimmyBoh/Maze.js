@@ -1,116 +1,120 @@
-window.Grid = {};
-window.Size = 5;
+(function(){
+	'use strict';
 
-var CELL_MULTIPLIER = 1;
-var CELL_OFFSET = Math.floor(CELL_MULTIPLIER / 2);
+	window.Grid = {};
+	window.Size = 5;
 
-window.buildGrid = function (w, h) {
+	var CELL_MULTIPLIER = 1;
+	var CELL_OFFSET = Math.floor(CELL_MULTIPLIER / 2);
 
-	Grid.addClass(CELL_MULTIPLIER === 1 ? 'lines' : 'grid');
+	window.buildGrid = function (w, h) {
 
-	var cellsWidth = w * CELL_MULTIPLIER;
-	var cellsHeight = h * CELL_MULTIPLIER;
+		Grid.addClass(CELL_MULTIPLIER === 1 ? 'lines' : 'grid');
 
-	var hPercentage = 100 / cellsHeight;
-	var wPercentage = 100 / cellsWidth;
+		var cellsWidth = w * CELL_MULTIPLIER;
+		var cellsHeight = h * CELL_MULTIPLIER;
 
-	for (var r = 0; r < cellsHeight; r++) {
-		for (var c = 0; c < cellsWidth; c++) {
+		var hPercentage = 100 / cellsHeight;
+		var wPercentage = 100 / cellsWidth;
 
-			var cell = $('<div class="cell" id="' + c + 'x' + r + '" title="' + c + ' x ' + r + '"/>');
+		for (var r = 0; r < cellsHeight; r++) {
+			for (var c = 0; c < cellsWidth; c++) {
 
-			if (r % CELL_MULTIPLIER == CELL_OFFSET && c % CELL_OFFSET == CELL_OFFSET)
-				cell.addClass('core');
+				var cell = $('<div class="cell" id="' + c + 'x' + r + '" title="' + c + ' x ' + r + '"/>');
 
-			cell.css({
-				'width' : wPercentage + '%',
-				'height' : hPercentage + '%',
-			});
-			Grid.append(cell);
+				if (r % CELL_MULTIPLIER == CELL_OFFSET && c % CELL_OFFSET == CELL_OFFSET)
+					cell.addClass('core');
+
+				cell.css({
+					'width' : wPercentage + '%',
+					'height' : hPercentage + '%',
+				});
+				Grid.append(cell);
+			}
 		}
-	}
-}
+	};
 
-window.generateMaze = function (w, h) {
+	window.generateMaze = function (w, h) {
 
-	var seedInput = $('#seedInput');
-	var seed = seedInput.val();
+		var seedInput = $('#seedInput');
+		var seed = seedInput.val();
 
-	if (!seed)
-		return;
+		if (!seed)
+			return;
 
-	window.maze.generate({
-		generator : 'Random',
-		seed : seed,
-		done : function () {
-			//seedInput.val(this.seed);
-		}
-	});
-}
-
-window.generateRandom = function () {
-	window.maze.generate(MazeJS.Generators.Random, function () {
-		$('#seedInput').val(this.seed);
-	});
-};
-
-window.findCellDiv = function (x, y) {
-	return $('#' + x + 'x' + y);
-}
-
-window.displayCell = function (cell) {
-	var x = CELL_MULTIPLIER * cell.x + CELL_OFFSET;
-	var y = CELL_MULTIPLIER * cell.y + CELL_OFFSET;
-
-	if (CELL_MULTIPLIER === 3) {
-		for (var xi = -1; xi <= 1; xi++)
-			for (var yi = -1; yi <= 1; yi++)
-				findCellDiv(x + xi, y + yi).removeClass('open');
-
-		findCellDiv(x, y).addClass('open');
-
-		if (cell.N)
-			findCellDiv(x, y - 1).addClass('open');
-		if (cell.E)
-			findCellDiv(x + 1, y).addClass('open');
-		if (cell.S)
-			findCellDiv(x, y + 1).addClass('open');
-		if (cell.W)
-			findCellDiv(x - 1, y).addClass('open');
-
-		if (cell.N && cell.E)
-			findCellDiv(x + 1, y - 1).addClass('open');
-		if (cell.S && cell.E)
-			findCellDiv(x + 1, y + 1).addClass('open');
-		if (cell.N && cell.W)
-			findCellDiv(x - 1, y - 1).addClass('open');
-		if (cell.S && cell.W)
-			findCellDiv(x - 1, y + 1).addClass('open');
-	} else if (CELL_MULTIPLIER === 1) {
-		var cellDiv = window.findCellDiv(x, y);
-
-		var cellDivClass = 'cell ';
-		for (var s in cell.state)
-			cellDivClass += cell.state[s].toUpperCase() + ' ';
-
-		cellDiv.attr('class', cellDivClass).attr('title', cell.state);
-	}
-}
-
-window.clearGrid = function () {
-	$('#seedInput').val('');
-	window.maze.clear();
-}
-
-$(function () {
-	Grid = $('#grid');
-
-	window.buildGrid(Size, Size);
-
-	window.maze = new MazeJS.Maze({
-			width : Size,
-			height : Size,
-			onCellChange : displayCell,
-			generator : 'Random'
+		window.maze.generate({
+			generator : 'Random',
+			seed : seed,
+			done : function () {
+				//seedInput.val(this.seed);
+			}
 		});
-});
+	};
+
+	window.generateRandom = function () {
+	    var random = Math.floor(Math.random() * 99999);
+	    $('#seedInput').val(random);
+	    generateMaze();
+	};
+
+	window.findCellDiv = function (x, y) {
+		return $('#' + x + 'x' + y);
+	};
+
+	window.displayCell = function (cell) {
+		var x = CELL_MULTIPLIER * cell.x + CELL_OFFSET;
+		var y = CELL_MULTIPLIER * cell.y + CELL_OFFSET;
+
+		if (CELL_MULTIPLIER === 3) {
+			for (var xi = -1; xi <= 1; xi++)
+				for (var yi = -1; yi <= 1; yi++)
+					findCellDiv(x + xi, y + yi).removeClass('open');
+
+			findCellDiv(x, y).addClass('open');
+
+			if (cell.N)
+				findCellDiv(x, y - 1).addClass('open');
+			if (cell.E)
+				findCellDiv(x + 1, y).addClass('open');
+			if (cell.S)
+				findCellDiv(x, y + 1).addClass('open');
+			if (cell.W)
+				findCellDiv(x - 1, y).addClass('open');
+
+			if (cell.N && cell.E)
+				findCellDiv(x + 1, y - 1).addClass('open');
+			if (cell.S && cell.E)
+				findCellDiv(x + 1, y + 1).addClass('open');
+			if (cell.N && cell.W)
+				findCellDiv(x - 1, y - 1).addClass('open');
+			if (cell.S && cell.W)
+				findCellDiv(x - 1, y + 1).addClass('open');
+		} else if (CELL_MULTIPLIER === 1) {
+			var cellDiv = window.findCellDiv(x, y);
+
+			var cellDivClass = 'cell ';
+			for (var s in cell.state)
+				cellDivClass += cell.state[s].toUpperCase() + ' ';
+
+			cellDiv.attr('class', cellDivClass).attr('title', cell.state);
+		}
+	};
+
+	window.clearGrid = function () {
+		$('#seedInput').val('');
+		window.maze.clear();
+	};
+
+	$(function () {
+		Grid = $('#grid');
+
+		window.buildGrid(Size, Size);
+
+		window.maze = new MazeJS.Maze({
+				width : Size,
+				height : Size,
+				onCellChange : displayCell,
+				generator : 'Random'
+			});
+	});
+})();
