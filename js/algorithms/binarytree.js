@@ -38,14 +38,10 @@
 
         var dirFunc = randos[rand.nextInt(0, randos.length)];
         maze.forEach(function (cell) {
-            
             var newDir = dirFunc(maze, cell, rand);
             if (!newDir) return;
 
-            var state = newDir + cell.state;
-            console.log(state);
-            //console.log(cell.x + 'x' + cell.y + ' -> ' + state);
-            cell.setState(state);
+            cell.setState(newDir + cell.state);
         });
         done.call(this);
     });
