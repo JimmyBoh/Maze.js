@@ -104,6 +104,7 @@
 
 	window.clearGrid = function () {
 	    SeedInput.val('');
+	    window.location.hash = '';
 		window.maze.clear();
 	};
 
