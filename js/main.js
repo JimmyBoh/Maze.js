@@ -2,6 +2,7 @@
 	'use strict';
 
 	window.Grid = {};
+	window.SeedInput;
 	window.Size = 5;
 
 	var CELL_MULTIPLIER = 1;
@@ -46,14 +47,15 @@
 			generator : 'Random',
 			seed : seed,
 			done : function () {
-				//seedInput.val(this.seed);
+			    window.location.hash = '#' + this.seed;
 			}
 		});
 	};
 
 	window.generateRandom = function () {
 	    var random = Math.floor(Math.random() * 99999);
-	    $('#seedInput').val(random);
+	    SeedInput.val(random);
+	    window.location.hash = '#' + random;
 	    generateMaze();
 	};
 
@@ -101,20 +103,28 @@
 	};
 
 	window.clearGrid = function () {
-		$('#seedInput').val('');
+	    SeedInput.val('');
 		window.maze.clear();
 	};
 
 	$(function () {
 		Grid = $('#grid');
-
+		window.SeedInput = $('#seedInput');
 		window.buildGrid(Size, Size);
 
 		window.maze = new MazeJS.Maze({
-				width : Size,
-				height : Size,
-				onCellChange : displayCell,
-				generator : 'Random'
-			});
+		    width: Size,
+		    height: Size,
+		    onCellChange: displayCell,
+		    generator: 'Random'
+		});
+
+		if(!window.location.hash){
+		    window.location.hash = '#10';
+		}
+		
+		var initialSeed = window.location.hash.replace('#', '');
+		SeedInput.val(initialSeed);
+		generateMaze();
 	});
 })();
